@@ -1,0 +1,29 @@
+    class Solution {
+    public:
+        bool canJump(vector<int>& nums) {
+            // 将当前的位置的值和前一个最大的值 -1 做对比，如果比当前的打，替换当前值，没有当前值大则不变
+            // f(x) = max(f(x), f(x) - 1);
+            int iLength = nums.size();
+
+            // 如果初始点是0且只有一个点，需要注意，这种情况也算可以到达最后点
+            if(nums[0] == 0)
+            {
+                if(iLength == 1)
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            for(int i = 1; i < iLength; i++)
+            {
+                nums[i] = max(nums[i - 1] - 1, nums[i]);
+	// 注意当nums[i] = 0 的时候是最后一个点的情况
+                if(nums[i] <= 0 && i < iLength - 1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    };
