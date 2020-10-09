@@ -1,0 +1,44 @@
+132. 分割回文串 II
+给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+
+返回符合要求的最少分割次数。
+
+示例:
+
+输入: "aab"
+输出: 1
+解释: 进行一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
+
+// 分析，从左到右遍历字符串，并填写相应的dp数组，dp[i]表示以i为终点的字符串dp[0 - i]的最小分割数。
+// 定义另外一个变量j 在 [0 - i]之间，如果s[j - i]为回文串，则执行dp[i] = min(dp[i], dp[j - 1] + 1)比较当前最小分割
+// 数与以s[j - i]为分割子串的情况下，哪种为最小分割数。遍历到终点后，返回dp[ilength - 1]即为最小分割数
+#include<cmath>
+class Solution {
+public:
+    int minCut(string s) {
+        int iLength = s.size();
+        // oDp[i]记录的是当前节点为终点，可以分割的最小次数
+        std::vector<int> oDp(iLength, INT_MAX);
+        std::vector<std::vector<bool>> oAsis(iLength, std::vector(iLength, false));
+
+        for(int i = 0; i < iLength; i++)
+        {
+            for(int j = 0; j <= i; j++)
+            {
+                if(s[i] == s[j] && ((i - j) <= 2 || oAsis[i - 1][j + 1] == true))
+                {
+                    oAsis[i][j] = true;
+                    if(j == 0)
+                    {
+                        oDp[i] = 0;
+                    }
+                    else
+                    {
+                        oDp[i] = min(oDp[i], oDp[j - 1] + 1);
+                    }
+                }
+            }
+        }
+        return oDp[iLength - 1];
+    }
+};
