@@ -1,0 +1,73 @@
+45. 跳跃游戏 II
+给定一个非负整数数组，你最初位于数组的第一个位置。
+
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+
+你的目标是使用最少的跳跃次数到达数组的最后一个位置。
+
+示例:
+
+输入: [2,3,1,1,4]
+输出: 2
+解释: 跳到最后一个位置的最小跳跃数是 2。
+     从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+说明:
+
+假设你总是可以到达数组的最后一个位置。 
+
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        // 数学方法，当前跳的最远的点，跳数最少
+        int iPosRight = 0;
+        int iLength = nums.size();
+      
+        vector<int> oJump(iLength, 0);
+        for(int i = 0; i < iLength; i++)
+        {
+            if(iPosRight < i + nums[i])
+            {
+                // 将之前iPosRight和当前iPosRight之前的地方都置为nums[i] + 1
+                int iPosRightTemp = i + nums[i];
+                if(iPosRightTemp >= iLength - 1)
+                {
+                    return iLength == 1 ? 0 : oJump[i] + 1;
+                }
+
+                for(int j = iPosRight + 1; j <= iPosRightTemp; j++)
+                {
+                    oJump[j] = oJump[i] + 1;
+                }
+                iPosRight = iPosRightTemp;
+            }
+        }
+        return oJump[iLength - 1];
+    }
+};
+
+
+// 第二种方式，定两个边界，第一个边界是当前跳数能到达的最远点，第二个边界是下一条能到达的最远点，
+// 遍历当前跳数的可达范围，通过nums[i] + i 与 iPosRight2 比较，获取下一条能到达的最远点。重复这一过程
+// 遍历结束，返回当前跳数
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        
+        int iPosRight1 = 0, iPosRight2 = 0;
+        int iLength = nums.size();
+        int iJump = 0;
+        for(int i = 0; i < iLength; i++)
+        {
+            if(i > iPosRight1)
+            {
+                iJump++;
+                iPosRight1 = iPosRight2;
+            }
+
+            iPosRight2 = max(iPosRight2, i + nums[i]);
+            
+        }
+        return iJump;
+    }
+};
