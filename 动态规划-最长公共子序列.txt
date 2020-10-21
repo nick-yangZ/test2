@@ -1,0 +1,32 @@
+// 思路，构建dp[m][n]，先给出第一行和第一列的值，中间的节点 dp[i][j] = max(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1] + 1)
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int iLength1 = text1.size();
+        int iLength2 = text2.size();
+
+        std::vector<std::vector<int> > oDp(iLength1, std::vector<int>(iLength2, 0));
+        oDp[0][0] = text1[0] == text2[0] ? 1 : 0;
+        for(int i = 1; i < iLength1; i++)
+        {
+            oDp[i][0] = text1[i] == text2[0] ?  1 : max(oDp[i - 1][0], oDp[i][0]);
+        }
+
+        for(int j = 1; j < iLength2; j++)
+        {
+            oDp[0][j] = text1[0] == text2[j] ?  1 : max(oDp[0][j - 1], oDp[0][j]);
+        }
+        for(int i = 1; i < iLength1; i++)
+        {
+            for(int j = 1; j < iLength2; j++)
+            {
+                oDp[i][j] = max(oDp[i - 1][j], oDp[i][j - 1]);
+                if(text1[i] == text2[j])
+                {
+                    oDp[i][j] = max(oDp[i][j], oDp[i - 1][j - 1] + 1);
+                }
+           }
+        }
+        return oDp[iLength1 - 1][iLength2 - 1];
+    }
+};
